@@ -1,0 +1,15 @@
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\bin\Debug\net6.0\PriceCalculatorKata.exe
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\bin\Debug\net6.0\PriceCalculatorKata.deps.json
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\bin\Debug\net6.0\PriceCalculatorKata.runtimeconfig.json
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\bin\Debug\net6.0\PriceCalculatorKata.dll
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\bin\Debug\net6.0\PriceCalculatorKata.pdb
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\obj\Debug\net6.0\PriceCalculatorKata.csproj.AssemblyReference.cache
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\obj\Debug\net6.0\PriceCalculatorKata.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\obj\Debug\net6.0\PriceCalculatorKata.AssemblyInfoInputs.cache
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\obj\Debug\net6.0\PriceCalculatorKata.AssemblyInfo.cs
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\obj\Debug\net6.0\PriceCalculatorKata.csproj.CoreCompileInputs.cache
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\obj\Debug\net6.0\PriceCalculatorKata.dll
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\obj\Debug\net6.0\refint\PriceCalculatorKata.dll
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\obj\Debug\net6.0\PriceCalculatorKata.pdb
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\obj\Debug\net6.0\PriceCalculatorKata.genruntimeconfig.cache
+C:\Users\Done\Desktop\Programming\CSharp\PriceCalculatorKata\PriceCalculatorKata\obj\Debug\net6.0\ref\PriceCalculatorKata.dll

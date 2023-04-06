@@ -9,7 +9,9 @@
             product.Type = "Book";
             product.Name = "The Little Prince";
             product.Price = 20.25m;
-            product.PrintProductInformation(20, 15);
+            product.Tax = 21;
+            //product.Discount = 15;
+            product.PrintProductInformation(12345, 7);
         }
     }
 }

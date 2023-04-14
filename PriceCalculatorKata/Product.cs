@@ -26,45 +26,54 @@
             this.costs = costs;
         }
 
-        public decimal CalculateTax()
+        public decimal CalculateTax(decimal price)
         {
-            tax.TaxAmount = tax.CalculateTax(UpdatedPrice, tax.TaxRate);
+            tax.TaxAmount = tax.CalculateTax(price, tax.TaxRate);
             return tax.TaxAmount;
         }
-        public decimal CalculateDiscount()
+        public decimal CalculateDiscount(decimal price)
         {
-            return discount.CalculateDiscount(UpdatedPrice);
+            return discount.CalculateDiscount(price);
         }
 
-        public decimal CalculateUPCDiscount()
+        public decimal CalculateUPCDiscount(decimal price)
         {
             if (this.UPC == UPC)
             {
-                return UPCdiscount.CalculateDiscount(UpdatedPrice);
+                return UPCdiscount.CalculateDiscount(price);
             }
             return 0;
         }
         public decimal CalculatePrice()
         {
-            if (discount.DiscountPrecedence == Precedence.Before)
+            if (discount.DiscountPrecedence == Precedence.NoPrecedence &&
+                UPCdiscount.DiscountPrecedence == Precedence.NoPrecedence)
             {
-                UpdatedPrice -= CalculateDiscount();
+                return Price - CalculateDiscount(Price) - CalculateUPCDiscount(Price) +
+                    CalculateTax(Price) + Cost.CalculateCosts(costs, Price);
             }
-            if (UPCdiscount.DiscountPrecedence == Precedence.Before)
+            else
             {
-                UpdatedPrice -= CalculateUPCDiscount();
+                if (discount.DiscountPrecedence == Precedence.Before)
+                {
+                    UpdatedPrice -= CalculateDiscount(UpdatedPrice);
+                }
+                if (UPCdiscount.DiscountPrecedence == Precedence.Before)
+                {
+                    UpdatedPrice -= CalculateUPCDiscount(UpdatedPrice);
+                }
+                UpdatedPrice += CalculateTax(UpdatedPrice);
+                if (discount.DiscountPrecedence == Precedence.After)
+                {
+                    UpdatedPrice -= CalculateDiscount(UpdatedPrice);
+                }
+                if (UPCdiscount.DiscountPrecedence == Precedence.After)
+                {
+                    UpdatedPrice -= CalculateUPCDiscount(UpdatedPrice);
+                }
+                UpdatedPrice += Cost.CalculateCosts(costs, Price);
+                return UpdatedPrice;
             }
-            UpdatedPrice += CalculateTax();
-            if (discount.DiscountPrecedence == Precedence.After)
-            {
-                UpdatedPrice -= CalculateDiscount();
-            }
-            if (UPCdiscount.DiscountPrecedence == Precedence.After)
-            {
-                UpdatedPrice -= CalculateUPCDiscount();
-            }
-            UpdatedPrice += Cost.CalculateCosts(costs, Price);
-            return UpdatedPrice;
         }
         public decimal CalculateReducedAmount()
         {

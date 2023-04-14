@@ -4,9 +4,9 @@
     {
         public static void Main()
         {
-            Discount discount = new Discount(15, Precedence.After);
-            Discount UPCdiscount = new Discount(7, Precedence.Before);
-            Tax tax = new Tax(20);
+            Discount discount = new Discount(15, Precedence.NoPrecedence);
+            Discount UPCdiscount = new Discount(7, Precedence.NoPrecedence);
+            Tax tax = new Tax(21);
             Cost packaging = new Cost(1, true,"Packaging");
             Cost transport = new Cost(2.2m, false, "Transport");
 

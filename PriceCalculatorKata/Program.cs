@@ -4,14 +4,12 @@
     {
         public static void Main()
         {
-            Product product = new Product();
-            product.UPC = 12345;
-            product.Type = "Book";
-            product.Name = "The Little Prince";
-            product.Price = 20.25m;
-            product.Tax = 21;
-            //product.Discount = 15;
-            product.PrintProductInformation(12345, 7);
+            Discount discount = new Discount(15, Precedence.After);
+            Discount UPCdiscount = new Discount(7, Precedence.Before);
+            Tax tax = new Tax(20);
+            Product product = new Product("The Little Prince", 12345, 20.25m,
+                "Book", tax, discount, UPCdiscount);
+            product.PrintProductInformation();
         }
     }
 }

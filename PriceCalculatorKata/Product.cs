@@ -10,9 +10,10 @@
         Discount discount;
         Discount UPCdiscount;
         Tax tax;
+        IList<Cost> costs;
 
         public Product(string Name, long UPC, decimal Price, string Type,
-            Tax tax, Discount discount, Discount UPCdiscount)
+            Tax tax, Discount discount, Discount UPCdiscount, IList<Cost> costs)
         {
             this.Name = Name;
             this.UPC = UPC;
@@ -22,6 +23,7 @@
             this.tax = tax;
             this.discount = discount;
             this.UPCdiscount = UPCdiscount;
+            this.costs = costs;
         }
 
         public decimal CalculateTax()
@@ -61,6 +63,7 @@
             {
                 UpdatedPrice -= CalculateUPCDiscount();
             }
+            UpdatedPrice += Cost.CalculateCosts(costs, Price);
             return UpdatedPrice;
         }
         public decimal CalculateReducedAmount()
@@ -71,8 +74,8 @@
         {
             Console.WriteLine($"{Type} With Name = {Name}, UPC = {UPC}, Price = ${Price}");
       
-            Console.WriteLine($"{Type} price reported as ${Price}.");
-            Console.WriteLine($"And after, Price = ${CalculatePrice()}");
+            Console.WriteLine($"Price Before ${Price}");
+            Console.WriteLine($"Price After = ${CalculatePrice()}");
 
             Console.Write($"Tax Amount = ${tax.TaxAmount}, ");
             if (discount.DiscountAmount != 0)
@@ -83,6 +86,11 @@
 
             Console.WriteLine($"Amount that was deduced = " +
             $"${CalculateReducedAmount()}");
+
+            foreach (Cost cost in costs)
+            {
+                Console.WriteLine($"{cost.Description} = ${cost.Amount}");
+            }
         }
     }
 }

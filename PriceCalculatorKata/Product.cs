@@ -10,7 +10,7 @@
         Discount discount;
         Discount UPCdiscount;
         Tax tax;
-        IList<Cost> costs;
+        IList<Cost> costs = null;
 
         public Product(string Name, long UPC, decimal Price, string Type,
             Tax tax, Discount discount, Discount UPCdiscount, IList<Cost> costs)
@@ -87,10 +87,15 @@
             Console.WriteLine($"Amount that was deduced = " +
             $"${CalculateReducedAmount()}");
 
-            foreach (Cost cost in costs)
+            if (costs != null)
             {
-                Console.WriteLine($"{cost.Description} = ${cost.Amount}");
+                foreach (Cost cost in costs)
+                {
+                    Console.WriteLine($"{cost.Description} = ${cost.Amount}");
+                }
             }
+            else
+                Console.WriteLine("No Costs !!");
         }
     }
 }

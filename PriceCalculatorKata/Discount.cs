@@ -14,8 +14,6 @@
 
         public decimal CalculateDiscount(decimal price)
         {
-            //DiscountAmount = Math.Round(price * (rate / 100m), 2);
-            //return DiscountAmount;
             if (DiscountPrecedence == Precedence.Before)
             {
                 DiscountAmount = Math.Round(price * (DiscountRate / 100m), 2);

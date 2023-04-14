@@ -13,18 +13,21 @@
             Description = description;
         }
 
-        public static decimal CalculateCosts(IList<Cost> costs,decimal price)
+        public static decimal CalculateCosts(IList<Cost> costs, decimal price)
         {
             decimal sum = 0;
-            foreach (Cost cost in costs)
+            if (costs != null)
             {
-                if (cost.IsPercentage)
+                foreach (Cost cost in costs)
                 {
-                    cost.Amount = Math.Round(price * (cost.Amount / 100), 2);
-                    sum += cost.Amount;
+                    if (cost.IsPercentage)
+                    {
+                        cost.Amount = Math.Round(price * (cost.Amount / 100), 2);
+                        sum += cost.Amount;
+                    }
+                    else
+                        sum += cost.Amount;
                 }
-                else
-                    sum += cost.Amount;
             }
             return sum;
         }

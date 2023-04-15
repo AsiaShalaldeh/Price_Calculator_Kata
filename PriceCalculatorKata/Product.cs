@@ -46,8 +46,14 @@
         }
         public decimal CalculatePrice()
         {
-            if (discount.DiscountPrecedence == Precedence.NoPrecedence &&
+            if (discount.Method == DiscountMethod.Multiplicative)
+            {
+                return Price - discount.CalculateDiscount(Price, discount, UPCdiscount)
+                    + CalculateTax(Price) + Cost.CalculateCosts(costs, Price);
+            }
+            else if ((discount.DiscountPrecedence == Precedence.NoPrecedence &&
                 UPCdiscount.DiscountPrecedence == Precedence.NoPrecedence)
+                || discount.Method == DiscountMethod.Additive)
             {
                 return Price - CalculateDiscount(Price) - CalculateUPCDiscount(Price) +
                     CalculateTax(Price) + Cost.CalculateCosts(costs, Price);

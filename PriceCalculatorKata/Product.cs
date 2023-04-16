@@ -11,9 +11,10 @@
         Discount UPCdiscount;
         Tax tax;
         IList<Cost> costs = null;
+        Cap cap = null;
 
         public Product(string Name, long UPC, decimal Price, string Type,
-            Tax tax, Discount discount, Discount UPCdiscount, IList<Cost> costs)
+            Tax tax, Discount discount, Discount UPCdiscount, IList<Cost> costs,Cap cap)
         {
             this.Name = Name;
             this.UPC = UPC;
@@ -24,6 +25,7 @@
             this.discount = discount;
             this.UPCdiscount = UPCdiscount;
             this.costs = costs;
+            this.cap = cap;
         }
 
         public decimal CalculateTax(decimal price)
@@ -46,44 +48,44 @@
         }
         public decimal CalculatePrice()
         {
+            return Price - CalculateReducedAmount() + CalculateTax(Price) +
+                Cost.CalculateCosts(costs, Price);
+        }
+        public decimal CalculateReducedAmount()
+        {
+            decimal totalDiscounts = 0;
             if (discount.Method == DiscountMethod.Multiplicative)
             {
-                return Price - discount.CalculateDiscount(Price, discount, UPCdiscount)
-                    + CalculateTax(Price) + Cost.CalculateCosts(costs, Price);
+                totalDiscounts = discount.CalculateDiscount(Price, discount, UPCdiscount)
+                    + CalculateTax(Price);
             }
             else if ((discount.DiscountPrecedence == Precedence.NoPrecedence &&
                 UPCdiscount.DiscountPrecedence == Precedence.NoPrecedence)
                 || discount.Method == DiscountMethod.Additive)
             {
-                return Price - CalculateDiscount(Price) - CalculateUPCDiscount(Price) +
-                    CalculateTax(Price) + Cost.CalculateCosts(costs, Price);
+                totalDiscounts = CalculateDiscount(Price) + CalculateUPCDiscount(Price);
             }
             else
             {
                 if (discount.DiscountPrecedence == Precedence.Before)
                 {
-                    UpdatedPrice -= CalculateDiscount(UpdatedPrice);
+                    totalDiscounts += CalculateDiscount(UpdatedPrice);
                 }
                 if (UPCdiscount.DiscountPrecedence == Precedence.Before)
                 {
-                    UpdatedPrice -= CalculateUPCDiscount(UpdatedPrice);
+                    totalDiscounts+= CalculateUPCDiscount(UpdatedPrice);
                 }
                 UpdatedPrice += CalculateTax(UpdatedPrice);
                 if (discount.DiscountPrecedence == Precedence.After)
                 {
-                    UpdatedPrice -= CalculateDiscount(UpdatedPrice);
+                    totalDiscounts += CalculateDiscount(UpdatedPrice);
                 }
                 if (UPCdiscount.DiscountPrecedence == Precedence.After)
                 {
-                    UpdatedPrice -= CalculateUPCDiscount(UpdatedPrice);
+                    totalDiscounts += CalculateUPCDiscount(UpdatedPrice);
                 }
-                UpdatedPrice += Cost.CalculateCosts(costs, Price);
-                return UpdatedPrice;
             }
-        }
-        public decimal CalculateReducedAmount()
-        {
-            return discount.DiscountAmount + UPCdiscount.DiscountAmount;
+            return Math.Min(totalDiscounts, cap.CalculateCap(Price));
         }
         public void PrintProductInformation()
         {
@@ -92,12 +94,12 @@
             Console.WriteLine($"Price Before ${Price}");
             Console.WriteLine($"Price After = ${CalculatePrice()}");
 
-            Console.Write($"Tax Amount = ${tax.TaxAmount}, ");
-            if (discount.DiscountAmount != 0)
-                Console.Write($"Discount = ${discount.DiscountAmount}");
-            else
-                Console.Write($"No Discount");
-            Console.WriteLine($", UPC Discount = ${UPCdiscount.DiscountAmount}");
+            Console.WriteLine($"Tax Amount = ${tax.TaxAmount}");
+            //if (discount.DiscountAmount != 0)
+            //    Console.Write($"Discount = ${discount.DiscountAmount}");
+            //else
+            //    Console.Write($"No Discount");
+            //Console.WriteLine($", UPC Discount = ${UPCdiscount.DiscountAmount}");
 
             Console.WriteLine($"Amount that was deduced = " +
             $"${CalculateReducedAmount()}");

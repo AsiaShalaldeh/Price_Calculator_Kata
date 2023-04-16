@@ -4,7 +4,7 @@
     {
         public static void Main()
         {
-            Discount discount = new Discount(15, Precedence.NoPrecedence, DiscountMethod.Multiplicative);
+            Discount discount = new Discount(15, Precedence.NoPrecedence, DiscountMethod.Additive);
             Discount UPCdiscount = new Discount(7, Precedence.NoPrecedence);
             Tax tax = new Tax(21);
             Cost packaging = new Cost(1, true, "Packaging");
@@ -14,8 +14,10 @@
             costs.Add(packaging);
             costs.Add(transport);
 
+            Cap cap = new Cap(4, false);
+
             Product product = new Product("The Little Prince", 12345, 20.25m,
-                "Book", tax, discount, UPCdiscount, costs);
+                "Book", tax, discount, UPCdiscount, null, cap);
             product.PrintProductInformation();
         }
     }

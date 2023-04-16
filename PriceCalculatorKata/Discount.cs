@@ -24,7 +24,6 @@
         public decimal CalculateDiscount(decimal price)
         {
             DiscountAmount = Math.Round(price * (DiscountRate / 100m), 2);
-            Console.WriteLine("Dis " + DiscountRate);
             return DiscountAmount;
         }
 

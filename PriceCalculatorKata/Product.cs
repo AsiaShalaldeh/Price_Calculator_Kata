@@ -5,16 +5,18 @@
         public string Name { get; set; }
         public long UPC { get; set; }
         public decimal Price { get; set; }
+        public string CurrencyCode { get; set; }
         public decimal UpdatedPrice { get; set; }
         public string Type { get; set; }
         Discount discount;
         Discount UPCdiscount;
         Tax tax;
         IList<Cost> costs = null;
-        Cap cap = null;
+        Cap cap = null; // I will move this to Discount class (it's a discount property)
 
         public Product(string Name, long UPC, decimal Price, string Type,
-            Tax tax, Discount discount, Discount UPCdiscount, IList<Cost> costs,Cap cap)
+            Tax tax, Discount discount, Discount UPCdiscount, IList<Cost> costs,Cap cap,
+            string CurrencyCode)
         {
             this.Name = Name;
             this.UPC = UPC;
@@ -26,6 +28,7 @@
             this.UPCdiscount = UPCdiscount;
             this.costs = costs;
             this.cap = cap;
+            this.CurrencyCode = CurrencyCode;
         }
 
         public decimal CalculateTax(decimal price)
@@ -91,24 +94,19 @@
         {
             Console.WriteLine($"{Type} With Name = {Name}, UPC = {UPC}, Price = ${Price}");
       
-            Console.WriteLine($"Price Before ${Price}");
-            Console.WriteLine($"Price After = ${CalculatePrice()}");
+            Console.WriteLine($"Price Before ${Price} {CurrencyCode}");
+            Console.WriteLine($"Price After = ${CalculatePrice()} {CurrencyCode}");
 
-            Console.WriteLine($"Tax Amount = ${tax.TaxAmount}");
-            //if (discount.DiscountAmount != 0)
-            //    Console.Write($"Discount = ${discount.DiscountAmount}");
-            //else
-            //    Console.Write($"No Discount");
-            //Console.WriteLine($", UPC Discount = ${UPCdiscount.DiscountAmount}");
+            Console.WriteLine($"Tax Amount = ${tax.TaxAmount} {CurrencyCode}");
 
             Console.WriteLine($"Amount that was deduced = " +
-            $"${CalculateReducedAmount()}");
+            $"${CalculateReducedAmount()} {CurrencyCode}");
 
             if (costs != null)
             {
                 foreach (Cost cost in costs)
                 {
-                    Console.WriteLine($"{cost.Description} = ${cost.Amount}");
+                    Console.WriteLine($"{cost.Description} = ${cost.Amount} {CurrencyCode}");
                 }
             }
             else

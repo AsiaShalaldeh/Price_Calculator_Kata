@@ -5,34 +5,112 @@
         public string Name { get; set; }
         public long UPC { get; set; }
         public decimal Price { get; set; }
+        public string CurrencyCode { get; set; }
+        public decimal UpdatedPrice { get; set; }
         public string Type { get; set; }
-        public decimal Discount { get; set; }
+        Discount discount;
+        Discount UPCdiscount;
+        Tax tax;
+        IList<Cost> costs = null;
+        Cap cap = null; // I will move this to Discount class (it's a discount property)
 
-        public decimal CalculatePriceWithTax(decimal taxRate = 20)
+        public Product(string Name, long UPC, decimal Price, string Type,
+            Tax tax, Discount discount, Discount UPCdiscount, IList<Cost> costs,Cap cap,
+            string CurrencyCode)
         {
-            decimal tax = Math.Round(Price * (taxRate / 100m), 2);
-            return Math.Round(Price + tax, 2);
+            this.Name = Name;
+            this.UPC = UPC;
+            this.Price = Price;
+            this.Type = Type;
+            this.UpdatedPrice = Price;
+            this.tax = tax;
+            this.discount = discount;
+            this.UPCdiscount = UPCdiscount;
+            this.costs = costs;
+            this.cap = cap;
+            this.CurrencyCode = CurrencyCode;
         }
-        public decimal CalculatePriceWithDiscount(decimal taxRate,decimal discountRate)
+
+        public decimal CalculateTax(decimal price)
         {
-            decimal priceWithTax = CalculatePriceWithTax(taxRate);
-            Discount = Math.Round(Price * (discountRate / 100m), 2);
-            return priceWithTax - Discount;
+            tax.TaxAmount = tax.CalculateTax(price, tax.TaxRate);
+            return tax.TaxAmount;
         }
-        public void PrintProductInformation(decimal taxRate, decimal discountRate)
+        public decimal CalculateDiscount(decimal price)
+        {
+            return discount.CalculateDiscount(price);
+        }
+
+        public decimal CalculateUPCDiscount(decimal price)
+        {
+            if (this.UPC == UPC)
+            {
+                return UPCdiscount.CalculateDiscount(price);
+            }
+            return 0;
+        }
+        public decimal CalculatePrice()
+        {
+            return Price - CalculateReducedAmount() + CalculateTax(Price) +
+                Cost.CalculateCosts(costs, Price);
+        }
+        public decimal CalculateReducedAmount()
+        {
+            decimal totalDiscounts = 0;
+            if (discount.Method == DiscountMethod.Multiplicative)
+            {
+                totalDiscounts = discount.CalculateDiscount(Price, discount, UPCdiscount)
+                    + CalculateTax(Price);
+            }
+            else if ((discount.DiscountPrecedence == Precedence.NoPrecedence &&
+                UPCdiscount.DiscountPrecedence == Precedence.NoPrecedence)
+                || discount.Method == DiscountMethod.Additive)
+            {
+                totalDiscounts = CalculateDiscount(Price) + CalculateUPCDiscount(Price);
+            }
+            else
+            {
+                if (discount.DiscountPrecedence == Precedence.Before)
+                {
+                    totalDiscounts += CalculateDiscount(UpdatedPrice);
+                }
+                if (UPCdiscount.DiscountPrecedence == Precedence.Before)
+                {
+                    totalDiscounts+= CalculateUPCDiscount(UpdatedPrice);
+                }
+                UpdatedPrice += CalculateTax(UpdatedPrice);
+                if (discount.DiscountPrecedence == Precedence.After)
+                {
+                    totalDiscounts += CalculateDiscount(UpdatedPrice);
+                }
+                if (UPCdiscount.DiscountPrecedence == Precedence.After)
+                {
+                    totalDiscounts += CalculateUPCDiscount(UpdatedPrice);
+                }
+            }
+            return Math.Min(totalDiscounts, cap.CalculateCap(Price));
+        }
+        public void PrintProductInformation()
         {
             Console.WriteLine($"{Type} With Name = {Name}, UPC = {UPC}, Price = ${Price}");
-            Console.Write($"Tax = {taxRate}%, ");
-            if (discountRate != 0)
-                Console.WriteLine($"Discount = {discountRate}%");
+      
+            Console.WriteLine($"Price Before ${Price} {CurrencyCode}");
+            Console.WriteLine($"Price After = ${CalculatePrice()} {CurrencyCode}");
+
+            Console.WriteLine($"Tax Amount = ${tax.TaxAmount} {CurrencyCode}");
+
+            Console.WriteLine($"Amount that was deduced = " +
+            $"${CalculateReducedAmount()} {CurrencyCode}");
+
+            if (costs != null)
+            {
+                foreach (Cost cost in costs)
+                {
+                    Console.WriteLine($"{cost.Description} = ${cost.Amount} {CurrencyCode}");
+                }
+            }
             else
-                Console.WriteLine($"No Discount");
-            Console.WriteLine($"{Type} price reported as ${Price} before tax " +
-                $"and ${CalculatePriceWithTax(taxRate)} after {taxRate}% tax.");
-            Console.WriteLine($"And after %{discountRate} discount, Price = " +
-                $"${CalculatePriceWithDiscount(taxRate, discountRate)}");
-            if (discountRate != 0)
-                Console.WriteLine($"Amount that was deduced = ${Discount}");
+                Console.WriteLine("No Costs !!");
         }
     }
 }
